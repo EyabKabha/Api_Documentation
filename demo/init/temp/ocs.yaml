@@ -1,0 +1,1013 @@
+paths:
+  /organizations/{clientOrganizationId}:
+    get:
+      tags:
+      - Organizations configurations
+      summary: Returns a JSON object with all the organizations configurations.
+      x-controller: Organizations
+      operationId: getOrganizationsConfigurations
+      parameters:
+      - name: clientOrganizationId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      responses:
+        '200':
+          description: OK
+    post:
+      tags:
+      - Organizations configurations
+      summary: Creates a JSON object with all the organizations configurations in
+        all scopes.
+      parameters:
+      - in: path
+        name: clientOrganizationId
+        schema:
+          type: string
+        required: true
+        description: Organization ID must be specified
+      x-controller: Organizations
+      operationId: createOrganizationsConfiguration
+      x-authorizationRequired: true
+      requestBody:
+        description: The object will contain the changes to organizations configurations
+          in all scopes.
+        required: true
+        content:
+          application/json:
+            schema:
+              anyOf:
+              - type: object
+                title: scopes
+                properties:
+                  scopes:
+                    type: object
+                    minProperties: 1
+                required: [scopes]
+              - type: object
+                title: ventures
+                properties:
+                  ventures:
+                    type: object
+                    minProperties: 1
+                required: [ventures]
+      responses:
+        '200':
+          description: OK
+    patch:
+      tags:
+      - Organizations configurations
+      summary: Updates a JSON object with all the organizations configurations in
+        all scopes.
+      x-controller: Organizations
+      operationId: updateOrganizationsConfiguration
+      parameters:
+      - name: clientOrganizationId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      requestBody:
+        description: The object will contain the changes to organizations configurations
+          in all scopes.
+        required: true
+        content:
+          application/json:
+            schema:
+              anyOf:
+              - type: object
+                title: scopes
+                properties:
+                  scopes:
+                    type: object
+                    minProperties: 1
+                required: [scopes]
+              - type: object
+                title: ventures
+                properties:
+                  ventures:
+                    type: object
+                    minProperties: 1
+                required: [ventures]
+      responses:
+        '200':
+          description: OK
+    put:
+      tags:
+      - Organizations configurations
+      summary: Fully updates a JSON object with all the organizations configurations
+        in all scopes.
+      x-controller: Organizations
+      operationId: fullUpdateOrganizationsConfiguration
+      parameters:
+      - name: clientOrganizationId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      requestBody:
+        description: The object will contain the organizations configurations in all
+          scopes.
+        required: true
+        content:
+          application/json:
+            schema:
+              anyOf:
+              - type: object
+                title: scopes
+                properties:
+                  scopes:
+                    type: object
+                    minProperties: 1
+                required: [scopes]
+              - type: object
+                title: ventures
+                properties:
+                  ventures:
+                    type: object
+                    minProperties: 1
+                required: [ventures]
+      responses:
+        '200':
+          description: OK
+    delete:
+      tags:
+      - Organizations configurations
+      summary: Deletes the organization configuration.
+      x-controller: Organizations
+      operationId: deleteOrganizationsConfiguration
+      parameters:
+      - name: clientOrganizationId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      responses:
+        '200':
+          description: OK
+
+  /organizations/{clientOrganizationId}/ventures/{ventureId}:
+    get:
+      tags:
+      - Organizations configurations
+      summary: Returns a JSON object with all the venture’s configurations in a
+        specific organization.
+      x-controller: Organizations
+      operationId: getOrganizationsConfigurationsVentures
+      parameters:
+      - name: clientOrganizationId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      - name: ventureId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      responses:
+        '200':
+          description: OK
+    post:
+      tags:
+      - Organizations configurations
+      summary: Create the venture object.
+      x-controller: Organizations
+      operationId: createOrganizationsConfigurationVentures
+      parameters:
+      - name: clientOrganizationId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      - name: ventureId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      requestBody:
+        description: The object will contain the changes to venture's configurations
+          in all scopes.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              minProperties: 1
+      responses:
+        '200':
+          description: OK
+    patch:
+      tags:
+      - Organizations configurations
+      summary: Update the venture object.
+      x-controller: Organizations
+      operationId: updateOrganizationsConfigurationVentures
+      parameters:
+      - name: clientOrganizationId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      - name: ventureId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      requestBody:
+        description: The object will contain the changes to venture's configurations
+          in all scopes.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              minProperties: 1
+      responses:
+        '200':
+          description: OK
+    put:
+      tags:
+      - Organizations configurations
+      summary: Fully updates a JSON object with all the Organizations configurationss
+        in all scopes.
+      x-controller: Organizations
+      operationId: fullUpdateOrganizationVenuteConfiguration
+      parameters:
+      - name: clientOrganizationId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      - name: ventureId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      requestBody:
+        description: The object will contain the organizations configurations in all
+          scopes.
+        required: true
+        content:
+          application/json:
+            schema:
+              anyOf:
+              - type: object
+                title: scopes
+                properties:
+                  scopes:
+                    type: object
+                    minProperties: 1
+                required: [scopes]
+              - type: object
+                title: ventures
+                properties:
+                  ventures:
+                    type: object
+                    minProperties: 1
+                required: [ventures]
+      responses:
+        '200':
+          description: OK
+    delete:
+      tags:
+      - Organizations configurations
+      summary: Deletes an organization’s configuration in a specific venture.
+      x-controller: Organizations
+      operationId: deleteOrganizationsConfiguration_ventures
+      parameters:
+      - name: clientOrganizationId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      - name: ventureId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      responses:
+        '200':
+          description: OK
+
+  /organizations/{clientOrganizationId}/scopes/{scope}:
+    get:
+      tags:
+      - Organizations configurations
+      summary: Returns a JSON object with all the organization’s configurations
+        in a specific scope. Possible URL Parameter withShared – Boolean that controls
+        the shared configuration doc in the response.
+      x-controller: Organizations
+      operationId: getOrganizationsConfigurationsScopes
+      parameters:
+      - in: query
+        name: withShared
+        schema:
+          type: boolean
+          default: false
+        description: Boolean that controls the shared configuration doc in the response
+      - name: clientOrganizationId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      - name: scope
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      responses:
+        '200':
+          description: OK
+    post:
+      tags:
+      - Organizations configurations
+      summary: Returns the scope object which has been changed.
+      x-controller: Organizations
+      operationId: createOrganizationsConfigurationScopes
+      parameters:
+      - name: clientOrganizationId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      - name: scope
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      requestBody:
+        description: The object will contain the changes to scopes's configurations
+          in the specific organizaion.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              minProperties: 1
+      responses:
+        '200':
+          description: OK
+    patch:
+      tags:
+      - Organizations configurations
+      summary: Returns the scope object which has been changed.
+      x-controller: Organizations
+      operationId: updateOrganizationsConfigurationScopes
+      parameters:
+      - name: clientOrganizationId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      - name: scope
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      requestBody:
+        description: The object will contain the changes to venture's configurations
+          in all scopes.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              minProperties: 1
+      responses:
+        '200':
+          description: OK
+    put:
+      tags:
+      - Organizations configurations
+      summary: Get Updated Configuration and create new record with the latest version
+        - Returns the scope object which has been changed.
+      x-controller: Organizations
+      operationId: fullUpdateOrganizationsConfiguration_scopes
+      parameters:
+      - name: clientOrganizationId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      - name: scope
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      requestBody:
+        description: The object will contain updated configuration for the given scope.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              minProperties: 1
+      responses:
+        '200':
+          description: OK
+    delete:
+      tags:
+      - Organizations configurations
+      summary: Deletes an organization’s configuration in a specific scope.
+      x-controller: Organizations
+      operationId: deleteOrganizationsConfiguration_scopes
+      parameters:
+      - name: clientOrganizationId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      - name: scope
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      responses:
+        '200':
+          description: OK
+
+  /organizations/{clientOrganizationId}/ventures/{ventureId}/scopes/{scope}:
+    get:
+      tags:
+      - Organizations configurations
+      summary: Returns a JSON object with all the organization’s configurations
+        in a specific scope. Possible URL Parameter withShared – Boolean that controls
+        the shared configuration doc in the response.
+      x-controller: Organizations
+      operationId: getOrganizationsConfigurationsVenturesScopes
+      parameters:
+      - in: query
+        name: withShared
+        schema:
+          type: boolean
+          default: false
+      - name: clientOrganizationId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      - name: ventureId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      - name: scope
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      responses:
+        '200':
+          description: OK
+    post:
+      tags:
+      - Organizations configurations
+      summary: Returns the scope object which has been changed.
+      x-controller: Organizations
+      operationId: createOrganizationsConfigurationVenturesScopes
+      parameters:
+      - name: clientOrganizationId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      - name: ventureId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      - name: scope
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      requestBody:
+        description: The object will contain the changes to scopes's configurations
+          in the specific organizaion.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              minProperties: 1
+      responses:
+        '200':
+          description: OK
+    patch:
+      tags:
+      - Organizations configurations
+      summary: Returns the scope object which has been changed.
+      x-controller: Organizations
+      operationId: updateOrganizationsConfigurationVenturesScopes
+      parameters:
+      - name: clientOrganizationId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      - name: ventureId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      - name: scope
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      requestBody:
+        description: The object will contain the changes to venture's configurations
+          in all scopes.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              minProperties: 1
+      responses:
+        '200':
+          description: OK
+    delete:
+      tags:
+      - Organizations configurations
+      summary: Deletes an organization’s configuration in a specific scope in a
+        specific venture.
+      x-controller: Organizations
+      operationId: deleteOrganizationsConfiguration_ventures_scopes
+      parameters:
+      - name: clientOrganizationId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      - name: ventureId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      - name: scope
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      responses:
+        '200':
+          description: OK
+  /organizations/{clientOrganizationId}/assets/images:
+    post:
+      tags:
+      - Organizations configurations
+      summary: Returns the image ID and URL.
+      x-controller: Assets
+      operationId: createImageAsset
+      parameters:
+      - name: clientOrganizationId
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      requestBody:
+        description: A binary data representing an image.
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              minProperties: 1
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  maxLength: 2048
+            encoding:
+              file:
+                contentType: image/apng, image/bmp, image/gif, image/x-icon, image/jpeg,
+                  image/png
+      responses:
+        '201':
+          description: Asset created
+  /scopes/{scope}:
+    get:
+      tags:
+      - Organizations configurations
+      summary: Returns a JSON object with all the organizations configurations.
+      x-controller: Scopes
+      operationId: getOrganizationsScopeConfigurations
+      parameters:
+      - name: scope
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      - name: withoutVentureId
+        in: query
+        required: false
+        schema:
+          type: string
+          maxLength: 80
+      responses:
+        '200':
+          description: OK
+  /scopes:
+    get:
+      tags:
+      - All Organizations configurations within all scopes or multiple scopes
+      summary: Returns a JSON object with all the organizations configurations.
+      x-controller: Scopes
+      operationId: getScopesConfigurations
+      parameters:
+      - name: withoutVentureId
+        in: query
+        required: false
+        schema:
+          type: string
+          maxLength: 80
+      - name: scope
+        in: query
+        required: false
+        schema:
+          type: array
+        explode: false
+        style: form
+        allowReserved: true
+        description: support multiple scopes separated by commas, template - ?scope=a,b,c
+      responses:
+        '200':
+          description: OK
+  /schemas:
+    get:
+      tags:
+      - All Scopes Schemas
+      summary: Returns a JSON object with all the scopes schema configurations.
+      x-controller: Schemas
+      operationId: getConfigurationSchemas
+      responses:
+        '200':
+          description: OK
+  /schemas/{scope}:
+    get:
+      tags:
+      - Organizations configurations
+      summary: Returns a JSON object with the Schema configurations within that scope.
+      x-controller: Schemas
+      operationId: getConfigurationSchemaByScope
+      parameters:
+      - name: scope
+        in: path
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      - name: withShared
+        in: query
+        schema:
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: OK
+
+components:
+  schemas:
+    Validate:
+      description: Validation response
+      properties:
+        isValid:
+          description: Token validation status
+          type: boolean
+        requestTypes:
+          description: Array of request types like idFront, idBack, selfie
+          type: array
+          items:
+            type: string
+    ProcessingRequest:
+      description: Processing request response
+      properties:
+        jwt:
+          description: JWT token for authentication request to BOS service
+          type: string
+        requestId:
+          description: The new consumer id
+          type: string
+
+    attachments_response:
+      description: Attachments response array
+      type: array
+      properties:
+        attachments:
+          $ref: '#/components/schemas/attachment_response'
+    delete_sessions:
+      description: list of sessions to delete
+      type: array
+      minItems: 1
+      uniqueItems: true
+      items:
+        type: string
+    attachment_response:
+      description: attachment response object
+      type: object
+      properties:
+        type:
+          type: string
+        sasTokenUri:
+          type: string
+        mimeType:
+          type: string
+      example:
+        type: thumbnail
+        sasTokenUri: https://mediastorage.blob.core.windows.net/ms-8/input_ABCDEFGHIJKMNLOP_page0_thumbnail.jpeg?params_for_token
+        mimeType: image/jpeg
+    asset_response:
+      description: asset response object
+      type: object
+      properties:
+        assetId:
+          type: integer
+        createdAt:
+          type: string
+        status:
+          type: string
+        type:
+          type: string
+        subType:
+          type: string
+        mimeType:
+          type: string
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/attachment_response'
+        processedBy:
+          type: string
+        sasTokenUri:
+          type: string
+      example:
+        assetId: 11
+        createdAt: '2021-06-19T11:07:42.200Z'
+        status: created
+        type: page0
+        mimeType: image/jpeg
+        attachments: []
+        sasTokenUri: https://mediastorage.blob.core.windows.net/ms-8/input_ABCDEFGHIJKMNLOP_page0.jpeg?params_for_token
+    session_response:
+      description: session response object
+      type: object
+      properties:
+        organizationId:
+          type: integer
+        ventureId:
+          type: integer
+        sessionId:
+          type: string
+        assets:
+          type: array
+          items:
+            $ref: '#/components/schemas/asset_response'
+      example:
+        organizationId: 326
+        ventureId:
+        sessionId: ABCDEFGHIJKMNLOP
+        assets: []
+    sessions_response:
+      description: response of array of sessions
+      type: array
+      items:
+        $ref: '#/components/schemas/session_response'
+    #added by eyab
+    sessions_response_error:
+      schema:
+      type: object
+      properties:
+        message:
+          type: string
+    sessions_unexpected_error:
+      schema:
+      type: object
+      properties:
+        message:
+          type: string
+    change_policy:
+      description: change policy
+      type: object
+      properties:
+        retentionPeriod:
+          type: integer
+      required:
+      - retentionPeriod
+    update_attachments:
+      description: update asset
+      type: array
+      minItems: 1
+      items:
+        type: object
+        properties:
+          organizationId:
+            type: integer
+          ventureId:
+            type: integer
+          sessionId:
+            type: string
+          type:
+            type: string
+            enum: [page0, page1, ff1, ff2, supp, barcode, chip, edv, iddata, pdata,
+              photo, sdp, aflvid, pflvid]
+          subType:
+            type: string
+          attachmentType:
+            type: string
+          processedBy:
+            type: string
+            enum: [cdr, bos]
+          status:
+            type: string
+            enum: [created, uploaded, pending, unsafe, safe]
+        required:
+        - organizationId
+        - sessionId
+        - type
+        - processedBy
+        - attachmentType
+        - status
+    update_assets:
+      oneOf:
+      - $ref: '#/components/schemas/update_asset'
+      - $ref: '#/components/schemas/update_asset_by_id'
+    update_asset_by_id:
+      description: update asset
+      type: array
+      items:
+        type: object
+        properties:
+          organizationId:
+            type: integer
+          ventureId:
+            type: integer
+          sessionId:
+            type: string
+          assetId:
+            type: string
+          type:
+            type: string
+            enum: [page0, page1, ff1, ff2, supp, barcode, chip, edv, iddata, pdata,
+              photo, sdp, aflvid, pflvid]
+          subType:
+            type: string
+          status:
+            type: string
+            enum: [created, uploaded, pending, unsafe, safe]
+          mimeType:
+            type: string
+          processedBy:
+            type: string
+            enum: [original, bos, cdr]
+          blobSize:
+            type: integer
+          dataId:
+            type: string
+          avResult:
+            type: string
+        required:
+        - assetId
+        - status
+    update_asset:
+      description: update asset
+      type: array
+      items:
+        type: object
+        properties:
+          organizationId:
+            type: integer
+          ventureId:
+            type: integer
+          sessionId:
+            type: string
+          assetId:
+            type: integer
+          type:
+            type: string
+            enum: [page0, page1, ff1, ff2, supp, barcode, chip, edv, iddata, pdata,
+              photo, sdp, aflvid, pflvid]
+          subType:
+            type: string
+          status:
+            type: string
+            enum: [created, uploaded, pending, unsafe, safe]
+          mimeType:
+            type: string
+          processedBy:
+            type: string
+            enum: [original, bos, cdr]
+          blobSize:
+            type: integer
+          dataId:
+            type: string
+          avResult:
+            type: string
+        required:
+        - organizationId
+        - sessionId
+        - type
+        - processedBy
+        - status
+    create_asset:
+      description: create asset
+      type: array
+      items:
+        type: object
+        properties:
+          type:
+            type: string
+            enum: [page0, page1, ff1, ff2, supp, barcode, chip, edv, iddata, pdata,
+              photo, aflvid, pflvid]
+          mimeType:
+            type: string
+            enum:
+            - application/json
+            - application/pdf
+            - application/octet-stream
+            - image/jpeg
+            - image/gif
+            - image/bmp
+            - image/png
+            - video/mp4
+            - video/mpeg
+            - audio/mpeg
+            - audio/wav
+            - text/plain
+          subType:
+            type: string
+            description: subType can be only a-z, A-Z and 0-9 characters
+            pattern: ^[a-zA-Z0-9]*$
+          processedBy:
+            enum: [cdr, original, bos]
+        required:
+        - type
+    create_attachment:
+      description: create attachments
+      type: array
+      items:
+        type: object
+        properties:
+          assetId:
+            type: string
+          type:
+            type: string
+            enum: [thumbnail, fullHD]
+          mimeType:
+            type: string
+            enum:
+            - application/json
+            - application/pdf
+            - application/octet-stream
+            - image/jpeg
+            - image/gif
+            - image/bmp
+            - image/png
+            - video/mp4
+            - video/mpeg
+            - audio/mpeg
+            - audio/wav
+            - text/plain
+        required:
+        - type
+        - assetId

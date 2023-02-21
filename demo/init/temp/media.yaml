@@ -1,0 +1,736 @@
+paths:
+  /v1/attachments:
+    put:
+      summary: Update assets status in body
+      description: ''
+      tags:
+      - internal-only
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update_attachments'
+      parameters:
+      - name: internalTokenExpiration
+        in: query
+        description: The token expiration time that will be used in case of internal
+          request.
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK
+        5XX:
+          description: unexpected error
+    post:
+      summary: Create bulk new attachments for assets
+      tags:
+      - internal-only
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create_attachment'
+      responses:
+        '200':
+          description: attachment response object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/attachments_response'
+        '403':
+          description: the request is forbidden
+        '409':
+          description: There is a conflict with the current request
+        5XX:
+          description: unexpected error
+  /v1/assets:
+    get:
+      summary: Get assets based on filters
+      tags:
+      - internal-only
+      parameters:
+      - name: withInternalTypes
+        in: query
+        description: If the response should return internal types (default true)
+        schema:
+          type: boolean
+          default: true
+      - name: internalTokenExpiration
+        in: query
+        description: The token expiration time that will be used in case of internal
+          request.
+        schema:
+          type: integer
+      - name: getUnsafeAssets
+        in: query
+        description: Flag for getting unsafe assets in internal request
+        schema:
+          type: boolean
+      - name: processedBy
+        in: query
+        description: filter assets based on processedBy
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          items:
+            type: string
+            enum: [original, bos, cdr]
+          default: [bos, cdr]
+      - name: organizationId
+        in: query
+        description: fetch assets for organizationId
+        schema:
+          type: integer
+          format: int64
+      - name: ventureIds
+        in: query
+        description: assets ventureIds to fetch
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: page
+        in: query
+        schema:
+          type: integer
+          format: int64
+          default: 1
+      - name: pageSize
+        in: query
+        schema:
+          type: integer
+          format: int64
+          default: 50
+      - name: sessionIds
+        in: query
+        description: assets sessionIds to fetch
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          items:
+            type: string
+            maxLength: 255
+      - name: statuses
+        in: query
+        description: assets statuses to fetch
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          items:
+            type: string
+            maxLength: 80
+      - name: updatedAtTo
+        in: query
+        description: fetch assets until this date time
+        schema:
+          type: string
+      responses:
+        '200':
+          description: sessions response object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sessions_response'
+        '404':
+          description: assets where not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sessions_response_error'
+        5XX:
+          description: unexpected error
+    put:
+      summary: Update assets status in body
+      tags:
+      - internal-only
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update_assets'
+      parameters:
+      - name: internalTokenExpiration
+        in: query
+        description: The token expiration time that will be used in case of internal
+          request.
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK
+        5XX:
+          description: unexpected error
+    delete:
+      summary: delete list of assets based on organizationIds and sessionIds
+      tags:
+      - internal-only
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/delete_sessions'
+      responses:
+        '200':
+          description: OK
+  /v1/assets/organization/{organizationId}/sessions/{sessionId}:
+    get:
+      summary: Get assets using organizationId and sessionId
+      tags:
+      - name: external
+
+      parameters:
+      - name: withInternalTypes
+        in: query
+        description: If the response should return internal types (default true)
+        schema:
+          type: boolean
+          default: true
+      - name: organizationId
+        required: true
+        in: path
+        schema:
+          type: integer
+      - name: sessionId
+        required: true
+        in: path
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9-]*$
+          maxLength: 255
+      - name: internalTokenExpiration
+        in: query
+        description: The token expiration time that will be used in case of internal
+          request.
+        schema:
+          type: integer
+      - name: getUnsafeAssets
+        in: query
+        description: Flag for getting unsafe assets in internal request
+        schema:
+          type: boolean
+      - name: processedBy
+        in: query
+        description: filter assets based on processedBy
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          items:
+            type: string
+            enum: [original, bos, cdr]
+          default: [bos, cdr]
+      - name: inBase64
+        in: query
+        description: If should return the file in base 64
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: session response object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/session_response'
+        '404':
+          description: assets where not found
+        5XX:
+          description: unexpected error
+    post:
+      summary: Create SASTokens for uploading new assets using organizationId and
+        sessionId
+      tags:
+      - internal-only
+      parameters:
+      - name: organizationId
+        required: true
+        in: path
+        schema:
+          type: integer
+      - name: sessionId
+        required: true
+        in: path
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9-]*$
+          maxLength: 255
+      - name: internalTokenExpiration
+        in: query
+        description: The token expiration time that will be used in case of internal
+          request.
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create_asset'
+      responses:
+        '200':
+          description: session response object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/session_response'
+        '403':
+          description: the request is forbidden
+        '409':
+          description: There is a conflict with the current request
+        5XX:
+          description: unexpected error
+    delete:
+      summary: delete assets based on organizationId and sessionId
+      tags:
+      - external
+      parameters:
+      - name: organizationId
+        required: true
+        in: path
+        schema:
+          type: integer
+      - name: sessionId
+        required: true
+        in: path
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9-]*$
+          maxLength: 255
+      responses:
+        '200':
+          description: OK
+  /v1/assets/organization/{organizationId}/venture/{ventureId}/sessions/{sessionId}:
+    get:
+      summary: Get assets using organizationId, ventureId and sessionId
+      tags:
+      - external
+      parameters:
+      - name: withInternalTypes
+        in: query
+        description: If the response should return internal types (default true)
+        schema:
+          type: boolean
+          default: true
+      - name: organizationId
+        required: true
+        in: path
+        schema:
+          type: integer
+      - name: ventureId
+        required: true
+        in: path
+        schema:
+          type: integer
+      - name: sessionId
+        required: true
+        in: path
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9-]*$
+          maxLength: 255
+      - name: internalTokenExpiration
+        in: query
+        description: The token expiration time that will be used in case of internal
+          request.
+        schema:
+          type: integer
+      - name: getUnsafeAssets
+        in: query
+        description: Flag for getting unsafe assets in internal request
+        schema:
+          type: boolean
+      - name: processedBy
+        in: query
+        description: filter assets based on processedBy
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          items:
+            type: string
+            enum: [original, bos, cdr]
+          default: [bos, cdr]
+      - name: inBase64
+        in: query
+        description: If should return the file in base 64
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: session response object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/session_response'
+        '404':
+          description: assets where not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sessions_response_error'
+        5XX:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sessions_unexpected_error'
+    post:
+      summary: Create SASTokens for uploading new assets using organizationId, ventureId
+        and sessionId
+      tags:
+      - internal-only
+      parameters:
+      - name: organizationId
+        required: true
+        in: path
+        schema:
+          type: integer
+      - name: ventureId
+        required: true
+        in: path
+        schema:
+          type: integer
+      - name: sessionId
+        required: true
+        in: path
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9-]*$
+          maxLength: 255
+      - name: internalTokenExpiration
+        in: query
+        description: The token expiration time that will be used in case of internal
+          request.
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/create_asset'
+      responses:
+        '200':
+          description: session response object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/session_response'
+        '403':
+          description: the request is forbidden
+        '409':
+          description: There is a conflict with the current request
+        5XX:
+          description: unexpected error
+    delete:
+      summary: delete assets based on organizationId, ventureId and sessionId
+      tags:
+      - external
+      parameters:
+      - name: organizationId
+        required: true
+        in: path
+        schema:
+          type: integer
+      - name: ventureId
+        required: true
+        in: path
+        schema:
+          type: integer
+      - name: sessionId
+        required: true
+        in: path
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9-]*$
+          maxLength: 255
+      responses:
+        '200':
+          description: OK
+  /v1/assets/organization/{organizationId}/sessions/{sessionId}/types/{type}:
+    get:
+      summary: Get assets using organizationId, sessionId and type
+      tags:
+      - external
+      parameters:
+      - name: withInternalTypes
+        in: query
+        description: If the response should return internal types (default true)
+        schema:
+          type: boolean
+          default: true
+      - name: organizationId
+        required: true
+        in: path
+        schema:
+          type: integer
+      - name: sessionId
+        required: true
+        in: path
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9-]*$
+          maxLength: 255
+      - name: type
+        required: true
+        in: path
+        schema:
+          type: string
+          maxLength: 255
+      - name: internalTokenExpiration
+        in: query
+        description: The token expiration time that will be used in case of internal
+          request.
+        schema:
+          type: integer
+      - name: getUnsafeAssets
+        in: query
+        description: Flag for getting unsafe assets in internal request
+        schema:
+          type: boolean
+      - name: processedBy
+        in: query
+        description: filter assets based on processedBy
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          items:
+            type: string
+            enum: [original, bos, cdr]
+          default: [bos, cdr]
+      - name: inBase64
+        in: query
+        description: If should return the file in base 64
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: session response object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/session_response'
+        '404':
+          description: assets where not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sessions_response_error'
+        5XX:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sessions_unexpected_error'
+  /v1/assets/organization/{organizationId}/venture/{ventureId}/sessions/{sessionId}/types/{type}:
+    get:
+      summary: Get assets using organizationId, ventureId, sessionId and type
+      tags:
+      - external
+      parameters:
+      - name: withInternalTypes
+        in: query
+        description: If the response should return internal types (default true)
+        schema:
+          type: boolean
+          default: true
+      - name: organizationId
+        required: true
+        in: path
+        schema:
+          type: integer
+      - name: ventureId
+        required: true
+        in: path
+        schema:
+          type: integer
+      - name: sessionId
+        required: true
+        in: path
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9-]*$
+          maxLength: 255
+      - name: type
+        required: true
+        in: path
+        schema:
+          type: string
+          maxLength: 255
+      - name: internalTokenExpiration
+        in: query
+        description: The token expiration time that will be used in case of internal
+          request.
+        schema:
+          type: integer
+      - name: getUnsafeAssets
+        in: query
+        description: Flag for getting unsafe assets in internal request
+        schema:
+          type: boolean
+      - name: processedBy
+        in: query
+        description: filter assets based on processedBy
+        style: form
+        explode: false
+        allowReserved: true
+        schema:
+          type: array
+          items:
+            type: string
+            enum: [original, bos, cdr]
+          default: [bos, cdr]
+      - name: inBase64
+        in: query
+        description: If should return the file in base 64
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: session response object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/session_response'
+        '404':
+          description: assets where not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sessions_response_error'
+        5XX:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/sessions_unexpected_error'
+  /v1/maintenance:
+    delete:
+      summary: delete all assets that exceeded the retention period
+      tags:
+      - internal-only
+      responses:
+        '200':
+          description: OK
+
+  /v1/policies/organization/{organizationId}:
+    put:
+      summary: Change policy configuration for organization
+      tags:
+      - internal-only
+      parameters:
+      - name: organizationId
+        required: true
+        in: path
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/change_policy'
+      responses:
+        '200':
+          description: OK
+  /v1/policies/organization/{organizationId}/venture/{ventureId}:
+    put:
+      summary: Change policy configuration for organization and venture
+      tags:
+      - internal-only
+      parameters:
+      - name: organizationId
+        required: true
+        in: path
+        schema:
+          type: integer
+      - name: ventureId
+        required: true
+        in: path
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/change_policy'
+      responses:
+        '200':
+          description: OK
+  /users:
+    get:
+      tags:
+      - Users
+      summary: Retrieve list of users
+      produces:
+      - application/json
+      parameters:
+      - name: tenantIdentifier
+        in: query
+        required: true
+        type: array
+        items:
+          type: string
+          enum:
+          - default
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid status value
+      security:
+      - basicAuth: []
+    post:
+      tags:
+      - Users
+      summary: Adds new application user.
+      description: 'Note: Password information is not required (or processed). Password
+        details at present are auto-generated and then sent to the email account given
+        (which is why it can take a few seconds to complete).'
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: tenantIdentifier
+        in: query
+        description: ''
+        required: true
+        type: array
+        items:
+          type: string
+          enum:
+          - default
+      - in: body
+        name: body
+        description: 'Mandatory Fields: username, firstname, lastname, email, officeId,
+          roles, sendPasswordToEmail'
+        required: true
+        schema:
+          $ref: '#/definitions/StructureForCreateUSer'
+      responses:
+        400:
+          description: ''
+        404:
+          description: ''
+      security:
+      - basicAuth: []

@@ -1,0 +1,1198 @@
+openapi: 3.0.0
+info:
+  version: 1.0.1
+  title: Cusomer Management Service API Swagger v2
+  description: |
+    Cusomer Management Service API Docs
+tags:
+  - name: Consumers
+    description: Manage Consumers
+  - name: Document Processing Requests
+    description: Create ID Verification processing requests
+  - name: Application Access
+    description: Manage application API access
+
+paths:
+  /documentTypes:
+    get:
+      tags:
+        - DocumentTypes
+      summary: Get DocumentTypes
+      x-controller: DocumentProcessingController
+      operationId: getDocumentTypes
+      x-authorizationRequired: true
+      responses:
+        '200':
+          description: A JSON array of DocumentTypes
+          content:
+            application/json:
+              schema:
+                type: array
+  /consumers:
+    get:
+      tags:
+        - DocumentTypes
+      summary: Get consumers
+      x-controller: ConsumerController
+      operationId: getConsumers
+      x-authorizationRequired: true
+      responses:
+        '200':
+          description: A JSON array of Consumer objects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Consumer'
+      parameters:
+        - name: clientOrganizationIds
+          in: query
+          required: false
+          style: form
+          explode: false
+          allowReserved: true
+          schema:
+            type: array
+            items:
+              type: string
+              maxLength: 255
+        - name: externalConsumerIds
+          in: query
+          required: false
+          style: form
+          explode: false
+          allowReserved: true
+          schema:
+            type: array
+            items:
+              type: string
+              maxLength: 255
+        - name: firstName
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 255
+        - name: lastName
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 255
+        - name: phoneNumber
+          in: query
+          required: false
+          schema:
+            type: string
+            minLength: 4
+            maxLength: 20
+        - name: email
+          in: query
+          required: false
+          schema:
+            type: string
+            format: email
+        - name: createdByIds
+          in: query
+          style: form
+          explode: false
+          allowReserved: true
+          schema:
+            type: array
+            items:
+              type: string
+              maxLength: 255
+        - name: createdAtFrom
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: createdAtTo
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: lastModifiedFrom
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: lastModifiedTo
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int64
+            default: 1
+    post:
+      tags:
+        - DocumentTypes
+      summary: Create new consumer
+      x-controller: ConsumerController
+      operationId: createConsumer
+      x-authorizationRequired: true
+      requestBody:
+        description: Consumer object that needs to be added to the store
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Consumer_For_Create'
+      responses:
+        "201":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Consumer'
+        "405":
+          description: Invalid input
+    delete:
+      tags:
+        - DocumentTypes
+      summary: Delete consumers
+      x-controller: ConsumerController
+      operationId: deleteConsumers
+      x-authorizationRequired: true
+      parameters:
+        - name: consumerIds
+          in: query
+          required: false
+          style: form
+          explode: false
+          allowReserved: true
+          schema:
+            type: array
+            items:
+              type: string
+              maxLength: 255
+      responses:
+        "200":
+          description: successful operation
+  /consumers/{consumerId}:
+    get:
+      tags:
+        - DocumentTypes
+      summary: Get consumer
+      x-controller: ConsumerController
+      operationId: getConsumer
+      x-authorizationRequired: true
+      parameters:
+        - name: consumerId
+          in: path
+          description: Consumer ID
+          required: true
+          schema:
+            type: string
+            maxLength: 255
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Consumer'
+        "404":
+          description: Consumer not found
+    patch:
+      tags:
+        - DocumentTypes
+      summary: Update an existing consumer
+      x-controller: ConsumerController
+      operationId: updateConsumer
+      x-authorizationRequired: true
+      parameters:
+        - name: consumerId
+          in: path
+          description: ID of the Consumer to get
+          required: true
+          schema:
+            type: string
+            maxLength: 255
+      requestBody:
+        description: Consumer object containing updated fields and values
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Consumer_For_Update'
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Consumer'
+        "404":
+          description: Consumer not found
+        "405":
+          description: Validation exception
+    delete:
+      tags:
+        - DocumentTypes
+      summary: Delete consumer
+      x-controller: ConsumerController
+      operationId: deleteConsumer
+      parameters:
+        - name: consumerId
+          in: path
+          required: true
+          schema:
+            type: string
+            maxLength: 255
+      responses:
+        "200":
+          description: successful operation
+  /documentprocessingrequests:
+    get:
+      tags:
+        - DocumentTypes
+      summary: Get document processing request
+      x-controller: DocumentProcessingController
+      operationId: getRequests
+      x-authorizationRequired: true
+      parameters:
+        - name: clientOrganizationIds
+          in: query
+          style: form
+          explode: false
+          allowReserved: true
+          schema:
+            type: array
+            items:
+              type: string
+              maxLength: 255
+        - name: createdByType
+          in: query
+          schema:
+            type: string
+            enum:
+              - api
+              - user
+        - name: uploadBy
+          in: query
+          schema:
+            type: string
+            enum:
+              - Api
+              - SecureMe
+              - Console
+              - MobileDemo
+              - MobileDebug
+        - name: capturedBy
+          in: query
+          schema:
+            type: string
+            enum:
+              - MobileSDK
+              - WebSDK
+        - name: platforms
+          in: query
+          style: form
+          explode: false
+          allowReserved: true
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - Windows
+                - MacOS
+                - Android
+                - iOS
+                - UNIX
+                - Linux
+              maxLength: 255
+        - name: createdByIds
+          in: query
+          style: form
+          explode: false
+          allowReserved: true
+          schema:
+            type: array
+            items:
+              type: string
+              maxLength: 255
+        - name: consumerId
+          in: query
+          schema:
+            type: integer
+            maxLength: 255
+            description: An existing consumer (this field and 'consumer' field are mutually exclusive), when both supplied 'consumer' is ignored
+        - name: consumerIds
+          in: query
+          style: form
+          explode: false
+          allowReserved: true
+          schema:
+            type: array
+            items:
+              type: integer
+              maxLength: 255
+        - name: externalConsumerIds
+          in: query
+          required: false
+          style: form
+          explode: false
+          allowReserved: true
+          schema:
+            type: array
+            items:
+              type: string
+              maxLength: 255
+        - name: firstName
+          in: query
+          schema:
+            type: string
+            example: John
+            maxLength: 255
+        - name: fullName
+          in: query
+          schema:
+            type: string
+            example: John
+            maxLength: 255
+        - name: lastName
+          in: query
+          schema:
+            type: string
+            example: Doe
+            maxLength: 255
+        - name: phoneNumber
+          in: query
+          schema:
+            type: string
+            example: 123-123-123
+            maxLength: 20
+        - name: email
+          in: query
+          schema:
+            type: string
+            format: email
+            maxLength: 255
+        - name: additionalInfo
+          in: query
+          schema:
+            type: string
+            maxLength: 5000
+        - name: createdAtFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: createdAtTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: lastUpdatedAtFrom
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: lastUpdatedAtTo
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: results
+          in: query
+          style: form
+          explode: false
+          allowReserved: true
+          schema:
+            type: array
+            items:
+              type: string
+              maxLength: 255
+        - name: countries
+          in: query
+          style: form
+          explode: false
+          allowReserved: true
+          schema:
+            type: array
+            items:
+              type: string
+              maxLength: 255
+        - name: processingFlows
+          in: query
+          style: form
+          explode: false
+          allowReserved: true
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - idv
+                - poa
+                - face2face
+                - edv
+                - nfc
+              maxLength: 255
+        - name: documentTypes
+          in: query
+          style: form
+          explode: false
+          allowReserved: true
+          schema:
+            type: array
+            items:
+              type: string
+              maxLength: 255
+        - name: ids
+          in: query
+          style: form
+          explode: false
+          allowReserved: true
+          schema:
+            type: array
+            items:
+              type: integer
+              maxLength: 255
+        - name: externalIds
+          in: query
+          style: form
+          explode: false
+          allowReserved: true
+          schema:
+            type: array
+            items:
+              type: string
+              maxLength: 255
+        - name: requestIds
+          in: query
+          style: form
+          explode: false
+          allowReserved: true
+          schema:
+            type: array
+            items:
+              type: string
+              maxLength: 255
+        - name: processingResults
+          in: query
+          style: form
+          explode: false
+          allowReserved: true
+          schema:
+            type: array
+            items:
+              type: string
+              maxLength: 255
+        - name: statuses
+          in: query
+          style: form
+          explode: false
+          allowReserved: true
+          schema:
+            type: array
+            items:
+              type: string
+              maxLength: 255
+        - name: sessionIds
+          in: query
+          style: form
+          explode: false
+          allowReserved: true
+          schema:
+            type: array
+            items:
+              type: string
+              maxLength: 255
+        - name: desktopToMobileFlows
+          in: query
+          style: form
+          explode: false
+          allowReserved: true
+          schema:
+            type: array
+            items:
+              type: string
+              maxLength: 255
+        - name: page
+          in: query
+          style: form
+          explode: false
+          allowReserved: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          style: form
+          explode: false
+          allowReserved: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/Request'
+        "405":
+          description: Invalid input
+    post:
+      tags:
+        - DocumentTypes
+      summary: Create new document processing request
+      x-controller: DocumentProcessingController
+      operationId: createRequest
+      x-authorizationRequired: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request_For_Create'
+      responses:
+        "201":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Request'
+        "405":
+          description: Invalid input
+    patch:
+      tags:
+        - DocumentTypes
+      summary: Begin BOS Processing Requests And Updating deleteAt field
+      x-controller: DocumentProcessingController
+      operationId: handleProcessingSubmittingRequest
+      x-authorizationRequired: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              description: Expect data to be sent
+              type: object
+              properties:
+                id:
+                  type: string
+                sessionId:
+                  type: string
+                desktopToMobileFlow:
+                  type: boolean
+                  description: indicates that the request was submitted in a mobile device after redirect from desktop flow (e.g. qr code)
+      responses:
+        "200":
+          description: successful operation
+        "405":
+          description: Invalid input
+  /documentprocessingrequests/{requestId}:
+    get:
+      tags:
+        - DocumentTypes
+      summary: Get document processing request
+      x-controller: DocumentProcessingController
+      operationId: getRequest
+      x-authorizationRequired: true
+      parameters:
+        - name: requestId
+          description: The requestId is one of CM Id / External Id / BOS requestId
+          in: path
+          required: true
+          schema:
+            type: string
+            maxLength: 255
+        - name: imageType
+          description: The imageType to return the images (url or base64)
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [base64, url]
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Request'
+    delete:
+      tags:
+        - DocumentTypes
+      summary: Delete request
+      x-controller: DocumentProcessingController
+      operationId: deleteDocumentProcessingRequestById
+      x-authorizationRequired: true
+      parameters:
+        - name: requestId
+          in: path
+          required: true
+          schema:
+            type: string
+            maxLength: 255
+      responses:
+        "200":
+          description: successful operation
+        "500":
+          description: failed operation
+  /applications/{clientOrganizationId}:
+    get:
+      tags:
+        - DocumentTypes
+      summary: Get application API access details
+      x-controller: AdminController
+      operationId: getApplication
+      x-authorizationRequired: true
+      parameters:
+        - name: clientOrganizationId
+          in: path
+          required: true
+          schema:
+            type: string
+            maxLength: 255
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+        "500":
+          description: failed operation
+        "404":
+          description: not found
+    patch:
+      tags:
+        - DocumentTypes
+      summary: Add a new public key
+      x-controller: AdminController
+      operationId: addPublicKey
+      x-authorizationRequired: true
+      parameters:
+        - name: clientOrganizationId
+          in: path
+          required: true
+          schema:
+            type: string
+            maxLength: 255
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                keyId:
+                  type: string
+                publicKey:
+                  type: string
+      responses:
+        "200":
+          description: successful operation
+        "500":
+          description: failed operation
+        "404":
+          description: not found
+  /media:
+    post:
+      tags:
+        - DocumentTypes
+      summary: Create sasTokenUri for uploading media assets
+      x-controller: MediaController
+      operationId: prepareUploadImage
+      x-authorizationRequired: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Create_Media_Assets'
+      responses:
+        "200":
+          description: successful operation
+  /user/preference:
+    put:
+      tags:
+        - DocumentTypes
+      summary: Create new user preference in the db
+      x-controller: UserController
+      operationId: setPreference
+      x-authorizationRequired: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User_Preference'
+      responses:
+        "201":
+          description: successful insert operation
+        "200":
+          description: successful update operation
+    get:
+      tags:
+        - DocumentTypes
+      summary: Get user preference
+      x-controller: UserController
+      operationId: getPreference
+      x-authorizationRequired: true
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User_Preference'
+        "500":
+          description: failed operation
+        "404":
+          description: not found
+      
+components:
+  schemas:
+    User_Preference:
+      description: User preference
+      type: object 
+    Create_Media_Asset:
+      description: The asset to create in media service
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["page0", "page1", "ff1", "ff2", "supp", "barcode", "chip", "edv", "iddata", "pdata", "photo", "sdp"]
+        mimeType:
+          type: string
+      required: 
+        - type
+    Create_Media_Assets:
+      description: The assets to create in media service
+      type: object
+      properties:
+        requestId:
+          type: string
+        assets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Create_Media_Asset'
+      required: 
+        - requestId
+        - assets
+    Consumer_For_Update:
+      description: The updatable part of a consumer object
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: John
+          maxLength: 255
+        lastName:
+          type: string
+          example: Doe
+          maxLength: 255
+        phoneNumber:
+          type: string
+          example: 123-123-123
+          maxLength: 20
+        email:
+          type: string
+          format: email
+        additionalInfo:
+          type: string
+          maxLength: 5000
+    Consumer_For_Create:
+      description: A Consumer object for the create (POST) action
+      allOf:
+        - type: object
+          properties:
+            clientOrganizationId:
+              type: string
+              maxLength: 255
+            createdById:
+              type: string
+              maxLength: 255
+            externalConsumerId:
+              type: string
+              maxLength: 255
+        - $ref: '#/components/schemas/Consumer_For_Update'
+    Consumer:
+      description: A Consumer object
+      allOf:
+        - $ref: '#/components/schemas/Consumer_For_Create'
+        - type: object
+          properties:
+            id:
+              type: string
+              maxLength: 255
+            createdAt:
+              type: string
+              format: date-time
+            lastUpdatedAt:
+              type: string
+              format: date-time
+            lastUpdatedBy:
+              type: string
+              maxLength: 255
+    Upload_Methods:
+      description: Upload methods is an array with 2 possible items (file, camera).
+      type: array
+      minItems: 1
+      maxItems: 2
+      uniqueItems: true
+      items:
+        type: string
+        enum:
+          - file
+          - camera
+          - url
+    Request_Base:
+      type: object
+      properties:
+        clientOrganizationId:
+          type: string
+          maxLength: 255
+        externalId:
+          type: string
+          maxLength: 255
+          description: ID that can be provided by customers (external) in order to later be used for fetching
+        consumerId:
+          type: string
+          maxLength: 255
+          description: An existing consumer (this field and 'consumer' field are mutually exclusive), when both supplied 'consumer' is ignored
+        consumer:
+          description: A new consumer to be created for this request (this field and 'consumerId' are mutually exclusive), when both supplied this is ignored
+          $ref: '#/components/schemas/Consumer_For_Create'
+        requestTypes:
+          description: Request types is an object including keys for each front side of the ID, back side, or a selfie image for face comparison. the value is an array of upload methods (see #/components/schemas/Upload_Methods)
+          type: object
+          properties:
+            idFront:
+              $ref: "#/components/schemas/Upload_Methods"
+            idBack:
+              $ref: "#/components/schemas/Upload_Methods"
+            faceCompare:
+              $ref: "#/components/schemas/Upload_Methods"
+            faceCompare2:
+              $ref: "#/components/schemas/Upload_Methods"
+            poa:
+              $ref: "#/components/schemas/Upload_Methods"
+        locale:
+          type: string
+          format: locale
+          example: "en-US"
+          description: Language locale in which the Secure.Me page will be displayed in
+        country:
+          type: string
+          example: "USA"
+          maxLength: 3
+          minLength: 3
+          description: 3-letter country code according to ISO 3166-1 standard
+        successRedirectUrl:
+          type: string
+          format: uri
+          description: Redirect URL that the secure.me page would redirect to when the session has ended successfuly.
+          example: https://example.com/success
+        errorRedirectUrl:
+          type: string
+          format: uri
+          description: Redirect URL that the secure.me page would redirect to when the session has ended with errors.
+          example: https://example.com/Error
+        mobileSuccessRedirectUrl:
+          type: string
+          format: uri
+          description: Redirect URL that the secure.me page would redirect to when the session has ended with errors.
+          example: https://example.com/Error
+        mobileErrorRedirectUrl:
+          type: string
+          format: uri
+          description: Redirect URL that the secure.me page would redirect to when the session has ended with errors.
+          example: https://example.com/Error
+        mobileRedirectBehavior:
+          type: string
+          enum:
+            - never
+            - always
+            - alwaysInDesktopToMobileFlow
+            - neverInDesktopToMobileFlow
+        processRequestTypes:
+          type: array
+          minItems: 1
+          items:
+            type: string
+            enum:
+              - idFront
+              - idBack
+              - faceCompare
+              - poa
+        callbackUrl:
+          type: string
+          format: uri
+          description: Webhook to call with the final processing result.
+          example: https://example.com/api/resultCallback
+        callbackHeaders:
+          type: object
+          description: Headers to attache the webhook request.
+          example: { Authorization: "sadjfhkahfwer#$%" }
+        processingFlow:
+          type: string
+          enum:
+            - idv
+            - poa
+            - face2face
+            - edv
+            - nfc
+        comparisonData:
+          description: Comparison data received from a customer for comparison between primary id or POA
+          $ref: "#/components/schemas/ComparisonData"
+        assetUrls:
+          description: An optional way for the user to upload their photos
+          $ref: "#/components/schemas/Assets_Urls_Options"
+    Request_For_Create:
+      description: Create request under an organization, for an existing / new consumer
+      allOf:
+        - $ref: '#/components/schemas/Request_Base'
+        - type: object
+          properties:
+            generateLink:
+              type: boolean
+              default: true
+            doubleCheckDirective:
+              type: string
+              enum:
+                - None
+                - SendDirectly
+                - SkipSending
+            sendSms:
+              type: boolean
+              description: Whether to send SMS to the consumer supplied phoneNumber or not. Default = false.
+            shortUrl:
+              type: boolean
+              default: false
+    Request_Link:
+      type: object
+      properties:
+        token:
+          type: string
+        expiredAt:
+          type: string
+          format: date-time
+        redeemedAt:
+          type: string
+          format: date-time
+        url:
+          type: string
+          format: uri
+    Request_With_Result:
+      description: The result part of the request
+      type: object
+      properties:
+        image:
+          type: object
+          properties:
+            uri:
+              type: string
+              format: uri
+            accessToken:
+              type: string
+        country:
+          type: string
+        documentType:
+          type: string
+        processingResult:
+          type: integer
+    Upload_Images_Data:
+      description: The images data part of the response
+      type: object
+      properties: 
+        isSanitizedSuccess:
+          type: boolean
+        isThreatsFound:
+          type: boolean
+        originalImages:
+          type: array
+          description: array of original images data
+          items:
+            type: object
+            properties:
+              mimeType:
+                type: string
+              subType:
+                type: string
+              uploadType:
+                type: string
+              avStatus:
+                type: string
+              size:
+                type: integer
+        sanitizedImages:
+          type: array
+          description: array of cdr images
+          items:
+            type: object
+            properties:
+              isThreatFound:
+                type: boolean
+              mimeType:
+                type: string
+              subType:
+                type: string
+              uploadType:
+                type: string
+              uri:
+                type: string
+    Request:
+      allOf:
+        - $ref: '#/components/schemas/Request_Base'
+        - $ref: '#/components/schemas/Request_With_Result'
+        - $ref: '#/components/schemas/Upload_Images_Data'
+        - type: object
+          description: Document Processing Request
+          properties:
+            id:
+              description: ID of the client request
+              type: string
+              maxLength: 255
+            documentProcessingRequestId:
+              description: ID of the processing request in the document processing service
+              type: string
+            createdAt:
+              type: string
+              format: date-time
+            lastUpdatedAt:
+              type: string
+              format: date-time
+            createdById:
+              type: string
+              maxLength: 255
+            createdByType:
+              type: string
+              enum:
+                - api
+                - user
+            uploadBy:
+              type: string
+              enum:
+                - Api
+                - SecureMe
+                - Console
+                - MobileDebug
+                - MobileDemo
+            capturedBy:
+              type: string
+              enum:
+                - MobileSDK
+                - WebSDK
+            link:
+              $ref: '#/components/schemas/Request_Link'
+    Application:
+      type: object
+      properties:
+        clientId:
+          type: string
+        publicKeys:
+          type: array
+          description: array of public keys and their ids (objects).
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                maxLength: 255
+              publicKey:
+                type: string
+    ComparisonData:
+      type: object
+      properties:
+        address:
+          type: string
+          maxLength: 255
+        residentialAddress:
+          type: string
+          maxLength: 255
+        firstName:
+          type: string
+          maxLength: 100
+        lastName:
+          type: string
+          maxLength: 100
+        middleNames:
+          type: string
+          maxLength: 100
+        dateOfBirth:
+          type: string
+          format: date-time
+        dateOfExpiry:
+          type: string
+          format: date-time
+        dateOfIssue:
+          type: string
+          format: date-time
+        countryIso3:
+          type: string
+          maxLength: 3
+        nationalityIso3:
+          type: string
+          maxLength: 3
+        documentNumber:
+          type: string
+          maxLength: 100
+        personalNumber:
+          type: string
+          maxLength: 100
+        phoneNumber:
+          type: string
+          maxLength: 100
+        imageSource:
+          type: string
+          maxLength: 255
+        socialSecurityNumber:
+          type: string
+          maxLength: 255
+        isDataExtractionOnly:
+          type: boolean
+        gender:
+          enum:
+            - male
+            - female
+        postcode:
+          type: string
+          maxLength: 10
+    Assets_Urls_Options:
+      description: Upload methods is an array with 2 possible items (file, camera).
+      type: object
+      properties:
+        idFront:
+          $ref: "#/components/schemas/Assets_Props"
+        idBack:
+          $ref: "#/components/schemas/Assets_Props"
+        faceCompare:
+          $ref: "#/components/schemas/Assets_Props"
+        faceCompare2:
+          $ref: "#/components/schemas/Assets_Props"
+        poa:
+          $ref: "#/components/schemas/Assets_Props"
+    Assets_Props:
+      type: object
+      additionalProperties: false
+      required: [ 'url' ]
+      properties:
+        url:
+          type: string
+          format: url
+        headers:
+          type: object
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: Customer Management Service V1
+    url: /v1
+  - description: DEV
+    url: https://cm.au10tixservicesdev.com/v1

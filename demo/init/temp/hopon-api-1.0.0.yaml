@@ -1,0 +1,182 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: HopOn Management Service API Swagger
+  description: |
+    HopOn Management Service API Docs
+tags:
+  - name: HopOn
+    description: Manage HopOn
+  - name: Document Processing Requests
+    description: Create ID Verification processing requests via HopOn
+paths:
+  /validaterequest:
+    get:
+      tags:
+        - Validation
+      summary: Validate user token
+      x-controller: DocumentProcessingController
+      operationId: validateToken
+      parameters:
+        - in: query
+          name: token
+          schema:
+            type: string
+            maximum: 255
+          required: true
+          description: String token to validate
+        - in: query
+          name: full
+          schema:
+            type: boolean
+          description: Get the full result
+          required: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Validate'
+  /preparerequest:
+      post:
+        tags:
+          - Validation
+        summary: Prepares Processing Request for BOS upload
+        x-controller: DocumentProcessingController
+        operationId: prepareRequest
+        requestBody:
+          description: Optional description in *Markdown*
+          required: true
+          content:
+            application/json:
+              schema:
+                type: "object"
+                required:
+                - "token"
+                properties:
+                  token:
+                    type: "string"
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ProcessingRequest'
+  /completerequest:
+      post:
+        tags:
+          - Validation
+        summary: This endpoint will start processing request and will redeem the token
+        x-controller: DocumentProcessingController
+        operationId: completeRequest
+        requestBody:
+          description: Optional description in *Markdown*
+          required: true
+          content:
+            application/json:
+              schema:
+                type: "object"
+                required:
+                - "token"
+                properties:
+                  token:
+                    type: "string"
+                  sessionId:
+                    type: "string"
+                  claimedDocumentIssuerCountryIso3:
+                    type: "string"
+                    enum: ["AFG","ALB","DZA","ASM","AND","AGO","AIA","ATA","ATG","ARG","ARM","ABW","AUS","AUT","AZE","BHS","BHR","BGD","BRB","BLR","BEL","BLZ","BEN","BMU","BTN","BOL","BIH","BWA","BVT","BRA","IOT","BRN","BGR","BFA","BDI","KHM","CMR","CAN","CPV","CYM","CAF","TCD","CHL","CHN","CXR","CCK","COL","COM","COD","COK","CRI","CIV","HRV","CUB","CYP","CZE","DNK","DJI","DMA","DOM","ECU","EGY","SLV","GNQ","ERI","EST","ETH","FLK","FRO","FJI","FIN","FRA","GUF","PYF","ATF","GAB","GMB","GEO","DEU","GHA","GIB","GRC","GRL","GRD","GLP","GUM","GTM","GIN ","GNB","GUY","HTI","HMD","VAT","HND","HKG","HUN","ISL","IND","IDN","IRN","IRQ","IRL","ISR","ITA","JAM","JPN","JOR","KAZ","KEN","KIR","PRK","KOR","KWT","KGZ","LAO","LVA","LBN","LSO","LBR","LBY","LIE","LTU","LUX","MAC","MDG","MWI","MYS","MDV","MLI","MLT","MHL","MTQ","MRT","MUS","MYT","MEX","FSM","MDA","MCO","MNG","MSR","MAR","MOZ","MMR","NAM","NRU","NPL","NLD","NCL","NZL","NIC","NER","NGA","NIU","NFK","MKD","MNP","NOR","OMN","PAK","PLW","PAN","PNG","PRY","PER","PHL","PCN","POL","PRT","PRI","QAT","REU","ROU","RUS","RWA","SHN","KNA","LCA","SPM","VCT","WSM","SMR","STP","SAU","SEN","SYC","SLE","SGP","SVK","SVN","SLB","SOM","ZAF","SGS","ESP","LKA","SDN","SUR","SJM","SWZ","SWE","CHE","SYR","TWN","TJK","TZA","THA","TLS","TGO","TKL","TON","TTO","TUN","TUR","TKM","TCA","TUV","UGA","UKR","ARE","GBR","USA","UMI","URY","UZB","VUT","VEN","VNM","VGB","VIR","WLF","ESH","YEM","ZMB","ZWE","ALA","BES","CUW","GGY","IMN","JEY","MNE","BLM","MAF","SRB","ANT","SSD","RKS","BOS", "CAM", "CSK", "D", "GRZ", "IRA", "PAR", "PS", "ROM", "SIL", "SLO", "SRM", "TM", "TMP", "WAS", "XGE", "YUG", "ZIM"]
+                  claimedDocumentType:
+                    type: "string"
+                  isMobile:
+                    type: "boolean"
+                  uploadMethodsUsed:
+                    type: "object"
+        responses:
+          '200':
+            description: OK
+  /webhooks/sms:
+    post:
+        tags:
+          - Validation
+        summary: This endpoint will receive notifications about SMS messages statuses
+        x-controller: WebhooksController
+        operationId: statusCallback
+        requestBody:
+          description: Message status values
+          required: true
+          content:
+            application/x-www-form-urlencoded:
+              schema:
+                type: "object"
+        responses:
+          '200':
+            description: OK
+  /events/secureme:
+    post:
+      tags:
+        - Validation
+      summary: This endpoint will receive notifications about events that happen in SecureMe and will send it to the OutBox service.
+      x-controller: NotificationCenterController
+      operationId: eventsReportingHandler
+      requestBody:
+        description: Events message body
+        required: true
+        content:
+           text/plain:
+              schema:
+                type: "string"
+      responses:
+        '200':
+          description: OK
+  /url/short:
+    get:
+      tags:
+        - Validation
+      summary: This endpoint will receive url and return short one
+      x-controller: DocumentProcessingController
+      operationId: getShortUrl
+      parameters:
+        - in: query
+          name: token
+          schema:
+            type: string
+            maximum: 255
+          required: true
+          description: String token to validate
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+
+components:
+  schemas:
+    Validate:
+      description: Validation response
+      properties:
+        isValid:
+          description: Token validation status
+          type: boolean
+        requestTypes:
+          description: Array of request types like idFront, idBack, selfie
+          type: array
+          items:
+            type: string
+    ProcessingRequest:
+      description: Processing request response
+      properties:
+        jwt:
+          description: JWT token for authentication request to BOS service
+          type: string
+        requestId:
+          description: The new consumer id
+          type: string

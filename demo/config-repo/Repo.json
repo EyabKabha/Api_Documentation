@@ -1,0 +1,17 @@
+[
+    {
+        "Repo": "https://Au10tix-AD@dev.azure.com/Au10tix-AD/Au10tix/_git/WEB_CustomerManagementService",
+        "paths": [
+            "api/api-1.0.0.yaml",
+            "api/hopon-api-1.0.0.yaml",
+            "api/internal-api-1.0.0.yaml"
+        ]
+    },
+    {
+        "Repo": "https://Au10tix-AD@dev.azure.com/Au10tix-AD/Au10tix/_git/WEB_OrganizationsConfigurationService",
+        "paths": [
+            "api/api-1.0.0.yml",
+            "api/api-1.0.0.yml2"
+        ]
+    }
+]

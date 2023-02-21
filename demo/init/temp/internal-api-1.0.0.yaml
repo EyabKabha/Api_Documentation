@@ -1,0 +1,60 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Internal Management Service API Swagger
+  description: |
+    Internal Management Service API Docs
+tags:
+  - name: Internal
+    description: Manage Internal Requests
+paths:
+  /internalrequests/piidata:
+    delete:
+        tags:
+          - internal
+        summary: This endpoint will remove all Organizations records from the database by retention period.
+        x-controller: InternalController
+        operationId: deleteOrganizationRequests
+        responses:
+          '200':
+            description: OK
+            content:
+             application/json:
+              schema:
+                type: object
+  /internalrequests/result/{requestId}:
+    get:
+      tags:
+        - internal
+      summary: Callback endpoint for getting webhook result
+      parameters:
+        - name: requestId
+          description: The requestId is one of CM Id / External Id / BOS requestId
+          in: path
+          required: true
+          schema:
+            type: string
+            maxLength: 255
+      x-controller: WebhooksController
+      operationId: getCustomerResult
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+  /internalrequests/resultCallback:
+    post:
+      tags:
+        - internal
+      summary: Callback endpoint from BOS to Outbox
+      x-controller: WebhooksController
+      operationId: resultCallback
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object

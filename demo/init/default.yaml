@@ -1,0 +1,46 @@
+openapi: 3.0.2
+
+servers:
+- url: https://{AU10TIX-API-URL}
+  description: URL
+
+
+info:
+  description:
+    $ref: './Guides/secureme.md'
+  title: Au10tix Service API
+
+  x-logo:
+    url: https://directory.findbiometrics.com/wp-content/uploads/2020/09/Artboard-5.png
+    altText: Au10tix logo
+
+x-tagGroups:
+- name: Media
+  tags:
+  - external
+- name: OCS Service
+  tags:
+  - Organizations configuration
+- name: Consumers
+  tags:
+  - Consumers
+- name: Requests
+  tags:
+   - Requests
+- name: User
+  tags:
+   - User
+tags:
+- name: external
+  description: external description
+- name: Organizations configurations
+  description: Organizations configurations description
+
+x-servers:
+- url: '{AU10TIX-API-URL}'
+  description: URL
+
+paths:
+
+components:
+  schemas:
